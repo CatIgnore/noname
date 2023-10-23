@@ -19538,6 +19538,10 @@
 					}
 					player.update();
 				},
+				changeCharge:function(){
+					if(num>0) player.addMark('charge', num);
+					else if(num<0) player.removeMark('charge', -num);
+				},
 				dying:function(){
 					"step 0"
 					event.forceDie=true;
@@ -24788,6 +24792,23 @@
 						if(numx>0) next.num=numx;
 						else _status.event.next.remove(next);
 					}
+					return next;
+				},
+				changeCharge:function(num){
+					var next=game.createEvent('changeCharge');
+					if(typeof num!='number'){
+						num=1;
+					}
+					var limit=0;
+					for(var skill of this.skills){
+						limit+=skill.chargeLimit;
+					}
+					if(this.countMark('charge')+num>limit){
+						num=limit-this.countMark('charge');
+					}
+					next.num=num;
+					next.player=this;
+					next.setContent('changeCharge');
 					return next;
 				},
 				getBuff:function(){
